@@ -6,8 +6,12 @@ export class ServerController {
 
     private serverRepository = getRepository(Server);
 
-    async all() {
-        return this.serverRepository.find();
+    async all(req: Request) {
+        if(req.query.serverGrpId === undefined)
+            return this.serverRepository.find();
+        return this.serverRepository.find({ where: {
+            serverGrpId: req.query.serverGrpId
+        }});
     }
 
     async one(req: Request) {
@@ -21,10 +25,6 @@ export class ServerController {
     async remove(req: Request) {
         let serverToRemove = await this.serverRepository.findOne(req.params.id);
         await this.serverRepository.remove(serverToRemove);
-    }
-
-    async byForeign(req: Request) {
-        return this.serverRepository.find({ where: {serverGrpId: req.params.serverGrpId}});
     }
 
 }

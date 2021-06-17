@@ -6,12 +6,19 @@ export class ScriptController {
 
     private scriptRepository = getRepository(Script);
 
-    async all() {
-        return this.scriptRepository.find();
+    async all(req: Request) {
+        if(req.query.serverId === undefined || req.query.alertId === undefined)
+            return this.scriptRepository.find();
+        return this.scriptRepository.find({ where: {
+            alertId: req.query.alertId, 
+            serverId: req.query.serverId
+        }});
     }
 
     async one(req: Request) {
-        return this.scriptRepository.findOne(req.params.id);
+        return this.scriptRepository.find( { where: {
+            scriptId: req.params.id
+        }});
     }
 
     async save(req: Request) {
@@ -21,13 +28,6 @@ export class ScriptController {
     async remove(req: Request) {
         let scriptToRemove = await this.scriptRepository.findOne(req.params.id);
         await this.scriptRepository.remove(scriptToRemove);
-    }
-
-    async byForeign(req: Request) {
-        return this.scriptRepository.find({ where: {
-            alertId: req.params.alertId, 
-            serverId: req.params.serverId
-        } });
     }
 
 }

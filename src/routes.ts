@@ -3,8 +3,6 @@ import {ServerGrpController} from "./controller/ServerGrpController";
 import {ServerController} from "./controller/ServerController";
 import {AlertController} from "./controller/AlertController";
 import {ScriptController} from "./controller/ScriptController";
-import { ServerGrp } from "./entity/ServerGrp";
-import { Alert } from "./entity/Alert";
 
 export const Routes = [{
     method: "get",
@@ -37,11 +35,6 @@ export const Routes = [{
     controller: ServerGrpController,
     action: "one"
 }, {
-    method: "get",
-    route: "/servergrp/:serviceId",
-    controller: ServerGrpController,
-    action: "byForeign"
-}, {
     method: "post",
     route: "/servergrp",
     controller: ServerGrpController,
@@ -61,11 +54,6 @@ export const Routes = [{
     route: "/server/:id",
     controller: ServerController,
     action: "one"
-}, {
-    method: "get",
-    route: "/server/:serverGrpId",
-    controller: ServerController,
-    action: "byForeign"
 }, {
     method: "post",
     route: "/server",
@@ -106,11 +94,6 @@ export const Routes = [{
     route: "/script/:id",
     controller: ScriptController,
     action: "one"
-}, {
-    method: "get",
-    route: "/script/:serverId/:alertId",
-    controller: ScriptController,
-    action: "byForeign"
 }, {
     method: "post",
     route: "/script",

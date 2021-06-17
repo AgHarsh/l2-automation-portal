@@ -4,16 +4,9 @@ import * as express from "express";
 import * as bodyParser from "body-parser";
 import {Request, Response} from "express";
 import {Routes} from "./routes";
-import {Service} from "./entity/Service";
-import {ServerGrp} from "./entity/ServerGrp";
-import {Server} from "./entity/Server";
-import {Alert} from "./entity/Alert";
-import {Script} from "./entity/Script";
-
 
 createConnection().then(async connection => {
 
-    // create express app
     const app = express();
     app.use(bodyParser.json());
 
