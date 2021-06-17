@@ -23,4 +23,8 @@ export class ServerGrpController {
         await this.serverGrpRepository.remove(serverGrpToRemove);
     }
 
+    async byForeign(req: Request) {
+        return this.serverGrpRepository.find({ where: {serviceId: req.params.serviceId}});
+    }
+
 }

@@ -23,4 +23,11 @@ export class ScriptController {
         await this.scriptRepository.remove(scriptToRemove);
     }
 
+    async byForeign(req: Request) {
+        return this.scriptRepository.find({ where: {
+            alertId: req.params.alertId, 
+            serverId: req.params.serverId
+        } });
+    }
+
 }

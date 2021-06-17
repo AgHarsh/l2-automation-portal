@@ -3,6 +3,8 @@ import {ServerGrpController} from "./controller/ServerGrpController";
 import {ServerController} from "./controller/ServerController";
 import {AlertController} from "./controller/AlertController";
 import {ScriptController} from "./controller/ScriptController";
+import { ServerGrp } from "./entity/ServerGrp";
+import { Alert } from "./entity/Alert";
 
 export const Routes = [{
     method: "get",
@@ -31,9 +33,49 @@ export const Routes = [{
     action: "all"
 }, {
     method: "get",
+    route: "/servergrp/:id",
+    controller: ServerGrpController,
+    action: "one"
+}, {
+    method: "get",
+    route: "/servergrp/:serviceId",
+    controller: ServerGrpController,
+    action: "byForeign"
+}, {
+    method: "post",
+    route: "/servergrp",
+    controller: ServerGrpController,
+    action: "save"
+}, {
+    method: "delete",
+    route: "/servergrp/:id",
+    controller: ServerGrpController,
+    action: "remove"
+}, {
+    method: "get",
     route: "/server",
     controller: ServerController,
     action: "all"
+}, {
+    method: "get",
+    route: "/server/:id",
+    controller: ServerController,
+    action: "one"
+}, {
+    method: "get",
+    route: "/server/:serverGrpId",
+    controller: ServerController,
+    action: "byForeign"
+}, {
+    method: "post",
+    route: "/server",
+    controller: ServerController,
+    action: "save"
+}, {
+    method: "delete",
+    route: "/server/:id",
+    controller: ServerController,
+    action: "remove"
 }, {
     method: "get",
     route: "/alert",
@@ -41,7 +83,42 @@ export const Routes = [{
     action: "all"
 }, {
     method: "get",
+    route: "/alert/:id",
+    controller: AlertController,
+    action: "one"
+}, {
+    method: "post",
+    route: "/alert",
+    controller: AlertController,
+    action: "save"
+}, {
+    method: "delete",
+    route: "/alert/:id",
+    controller: AlertController,
+    action: "remove"
+}, {
+    method: "get",
     route: "/script",
     controller: ScriptController,
     action: "all"
+}, {
+    method: "get",
+    route: "/script/:id",
+    controller: ScriptController,
+    action: "one"
+}, {
+    method: "get",
+    route: "/script/:serverId/:alertId",
+    controller: ScriptController,
+    action: "byForeign"
+}, {
+    method: "post",
+    route: "/script",
+    controller: ScriptController,
+    action: "save"
+}, {
+    method: "delete",
+    route: "/script/:id",
+    controller: ScriptController,
+    action: "remove"
 }];
