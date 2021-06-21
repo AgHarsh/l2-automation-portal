@@ -13,13 +13,15 @@ export class ScriptController {
     static getByServerAndAlert = async (req: Request, res: Response) => {
         const scriptRepository = getRepository(Script);
         try {
-            let scripts = await scriptRepository.find({ where: {
-                alertName: req.body.alertName, 
-                serverName: req.body.serverName
-            }});
+            let scripts = await scriptRepository.find({
+                where: {
+                    alertName: req.body.alertName,
+                    serverName: req.body.serverName
+                }
+            });
             res.send(scripts);
-            await scriptRepository.remove(scripts);
-        } catch(error) {
+            // await scriptRepository.remove(scripts);
+        } catch (error) {
             res.status(401).send("ServerGrp or Alert Not Found");
         }
     };
@@ -28,35 +30,65 @@ export class ScriptController {
         const scriptRepository = getRepository(Script);
         try {
             res.send(await scriptRepository.findOneOrFail(req.params.id));
-        } catch(error) {
+        } catch (error) {
             res.status(404).send("Script Not Found");
         }
     };
 
     static newScript = async (req: Request, res: Response) => {
         const errors = await validate(req.body);
-        if(errors.length > 0) return res.status(400).send("Error!");
+        if (errors.length > 0) return res.status(400).send("Error!");
 
         const scriptRepository = getRepository(Script);
         try {
             await scriptRepository.save(req.body);
-        } catch(error) {
+        } catch (error) {
             return res.status(409).send("Script already exists!");
         }
-        
+
         res.status(201).send();
     };
-    
+
+    static newManyScript = async (req: Request, res: Response) => {
+        const errors = await validate(req.body);
+        if (errors.length > 0) return res.status(400).send("Error!");
+
+        const scriptRepository = getRepository(Script);
+        try {
+            let scripts = await scriptRepository.find({
+                where: {
+                    alertName: req.body.alertName,
+                    serverName: req.body.serverName
+                }
+            });
+            await scriptRepository.remove(scripts);
+        } catch (error) {
+        }
+
+        req.body.scripts.forEach(async (scriptData) => {
+            const script = {
+                scriptFile: scriptData.script, alertName: req.body.alertName,
+                serverName: req.body.serverName
+            }
+            try {
+                await scriptRepository.save(script);
+            } catch (error) {
+                return res.status(409).send("Script already exists!");
+            }
+        })
+        res.status(201).send();
+    };
+
     static deleteScript = async (req: Request, res: Response) => {
         const scriptRepository = getRepository(Script);
         let script: Script;
         try {
             script = await scriptRepository.findOneOrFail(req.params.id);
-        } catch(error) {
+        } catch (error) {
             return res.status(404).send("Script Not Found");
         }
         scriptRepository.remove(script);
         res.status(204).send();
     };
-    
+
 }
