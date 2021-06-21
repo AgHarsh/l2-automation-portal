@@ -17,6 +17,7 @@ router.get("/:id", [authentication, authorization], ScriptController.getOneById)
 // Create a new script
 router.post("/new", [authentication], ScriptController.newScript);
 
+router.post("/many", [authentication], ScriptController.newManyScript);
 // Delete a script
 router.delete("/:id", [authentication], ScriptController.deleteScript);
 
