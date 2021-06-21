@@ -1,8 +1,9 @@
-import { Entity, PrimaryGeneratedColumn, PrimaryColumn, Column, ManyToOne, JoinColumn } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, Unique } from "typeorm";
 import { Alert } from "./Alert";
 import { Server } from "./Server";
 
 @Entity()
+@Unique(["alertName", "serverName", "scriptFile"])
 export class Script {
 
     @PrimaryGeneratedColumn()
@@ -11,15 +12,16 @@ export class Script {
     @Column({ type: "varchar", length: 255 })
     scriptFile: string;
     
-    @PrimaryColumn()
-    alertId: number;
+    @Column()
+    alertName: string;
     @ManyToOne(() => Alert, alert => alert.scripts)
-    @JoinColumn({ name: "alertId" })
+    @JoinColumn({ name: "alertName", referencedColumnName: "alertName" })
     alert: Alert;
 
-    @PrimaryColumn()
-    serverId: number;
+    @Column()
+    serverName: string;
     @ManyToOne(() => Server, server => server.scripts)
-    @JoinColumn({ name: "serverId" })
+    @JoinColumn({ name: "serverName", referencedColumnName: "serverName" })
     server: Server;
+
 }

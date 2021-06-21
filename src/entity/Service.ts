@@ -1,7 +1,8 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, Unique } from "typeorm";
 import { ServerGrp } from './ServerGrp';
 
 @Entity()
+@Unique(["serviceName"])
 export class Service {
 
     @PrimaryGeneratedColumn()

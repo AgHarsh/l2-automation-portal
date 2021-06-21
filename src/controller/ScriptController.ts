@@ -1,33 +1,60 @@
-import {getRepository} from "typeorm";
-import { Request } from "express";
-import {Script} from "../entity/Script";
+import { Request, Response } from "express";
+import { getRepository } from "typeorm";
+import { validate } from "class-validator";
+import { Script } from "../entity/Script";
 
 export class ScriptController {
 
-    private scriptRepository = getRepository(Script);
+    static listAll = async (req: Request, res: Response) => {
+        const scriptRepository = getRepository(Script);
+        res.send(await scriptRepository.find())
+    };
 
-    async all(req: Request) {
-        if(req.query.serverId === undefined || req.query.alertId === undefined)
-            return this.scriptRepository.find();
-        return this.scriptRepository.find({ where: {
-            alertId: req.query.alertId, 
-            serverId: req.query.serverId
-        }});
-    }
+    static getByServerAndAlert = async (req: Request, res: Response) => {
+        const scriptRepository = getRepository(Script);
+        try {
+            res.send(await scriptRepository.find({ where: {
+                alertName: req.body.alertName, 
+                serverName: req.body.serverName
+            }}));
+        } catch(error) {
+            res.status(401).send("ServerGrp or Alert Not Found");
+        }
+    };
 
-    async one(req: Request) {
-        return this.scriptRepository.find( { where: {
-            scriptId: req.params.id
-        }});
-    }
+    static getOneById = async (req: Request, res: Response) => {
+        const scriptRepository = getRepository(Script);
+        try {
+            res.send(await scriptRepository.findOneOrFail(req.params.id));
+        } catch(error) {
+            res.status(404).send("Script Not Found");
+        }
+    };
 
-    async save(req: Request) {
-        return this.scriptRepository.save(req.body);
-    }
+    static newScript = async (req: Request, res: Response) => {
+        const errors = await validate(req.body);
+        if(errors.length > 0) return res.status(400).send("Error!");
 
-    async remove(req: Request) {
-        let scriptToRemove = await this.scriptRepository.findOne(req.params.id);
-        await this.scriptRepository.remove(scriptToRemove);
-    }
-
+        const scriptRepository = getRepository(Script);
+        try {
+            await scriptRepository.save(req.body);
+        } catch(error) {
+            return res.status(409).send("Script already exists!");
+        }
+        
+        res.status(201).send();
+    };
+    
+    static deleteScript = async (req: Request, res: Response) => {
+        const scriptRepository = getRepository(Script);
+        let script: Script;
+        try {
+            script = await scriptRepository.findOneOrFail(req.params.id);
+        } catch(error) {
+            return res.status(404).send("Script Not Found");
+        }
+        scriptRepository.remove(script);
+        res.status(204).send();
+    };
+    
 }

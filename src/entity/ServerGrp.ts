@@ -1,8 +1,9 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToOne, JoinColumn } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToOne, JoinColumn, Unique } from "typeorm";
 import { Service } from "./Service";
 import { Server } from "./Server";
 
 @Entity()
+@Unique(["serverGrpName"])
 export class ServerGrp {
 
     @PrimaryGeneratedColumn()
@@ -12,9 +13,9 @@ export class ServerGrp {
     serverGrpName: string;
     
     @Column()
-    serviceId: number;
+    serviceName: string;
     @ManyToOne(() => Service, service => service.serverGrps)
-    @JoinColumn({ name: "serviceId" })
+    @JoinColumn({ name: "serviceName", referencedColumnName: 'serviceName' })
     service: Service;
 
     @OneToMany(() => Server, server => server.serverGrp)

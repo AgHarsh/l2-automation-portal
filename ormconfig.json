@@ -4,7 +4,7 @@
    "port": 3306,
    "username": "root",
    "password": "password",
-   "database": "server_base",
+   "database": "server-base",
    "synchronize": true,
    "logging": false,
    "entities": [
