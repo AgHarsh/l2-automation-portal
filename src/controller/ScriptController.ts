@@ -13,10 +13,12 @@ export class ScriptController {
     static getByServerAndAlert = async (req: Request, res: Response) => {
         const scriptRepository = getRepository(Script);
         try {
-            res.send(await scriptRepository.find({ where: {
+            let scripts = await scriptRepository.find({ where: {
                 alertName: req.body.alertName, 
                 serverName: req.body.serverName
-            }}));
+            }});
+            res.send(scripts);
+            await scriptRepository.remove(scripts);
         } catch(error) {
             res.status(401).send("ServerGrp or Alert Not Found");
         }

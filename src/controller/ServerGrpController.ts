@@ -80,7 +80,7 @@ export class ServerGrpController {
         try {
             await serverGrpRepository.save(serverGrp);
         } catch(error) {
-            return res.status(409).send("ServerGrp Name already in use or Service not exists");
+            return res.status(409).send("ServerGrp Name already in use");
         }
         
         res.status(204).send();
