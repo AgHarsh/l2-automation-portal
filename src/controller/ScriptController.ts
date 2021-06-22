@@ -41,20 +41,6 @@ export class ScriptController {
 
         const scriptRepository = getRepository(Script);
         try {
-            await scriptRepository.save(req.body);
-        } catch (error) {
-            return res.status(409).send("Script already exists!");
-        }
-
-        res.status(201).send();
-    };
-
-    static newManyScript = async (req: Request, res: Response) => {
-        const errors = await validate(req.body);
-        if (errors.length > 0) return res.status(400).send("Error!");
-
-        const scriptRepository = getRepository(Script);
-        try {
             let scripts = await scriptRepository.find({
                 where: {
                     alertName: req.body.alertName,
@@ -65,17 +51,21 @@ export class ScriptController {
         } catch (error) {
         }
 
-        req.body.scripts.forEach(async (scriptData) => {
-            const script = {
-                scriptFile: scriptData.script, alertName: req.body.alertName,
-                serverName: req.body.serverName
+        const scripts = req.body.scripts;
+        for (let i = 0; i < scripts.length; i++) {
+            if (scripts[i].script) {
+                const script = {
+                    scriptFile: scripts[i].script,
+                    alertName: req.body.alertName,
+                    serverName: req.body.serverName
+                };
+                try {
+                    await scriptRepository.save(script);
+                } catch (error) {
+                    return res.status(409).send("Script already exists!");
+                }
             }
-            try {
-                await scriptRepository.save(script);
-            } catch (error) {
-                return res.status(409).send("Script already exists!");
-            }
-        })
+        }
         res.status(201).send();
     };
 
