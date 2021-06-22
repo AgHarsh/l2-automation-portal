@@ -14,7 +14,7 @@ router.post("/", [authentication], ScriptController.getByServerAndAlert);
 // Get one script
 router.get("/:id", [authentication, authorization], ScriptController.getOneById);
 
-// Create a new script
+// Delete old scripts of the given server and alert and create new ones
 router.post("/new", [authentication], ScriptController.newScript);
 
 // Delete a script

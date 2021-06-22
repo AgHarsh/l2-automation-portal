@@ -18,7 +18,6 @@ export class ScriptController {
                 serverName: req.body.serverName
             }});
             res.send(scripts);
-            await scriptRepository.remove(scripts);
         } catch(error) {
             res.status(401).send("ServerGrp or Alert Not Found");
         }
@@ -39,11 +38,28 @@ export class ScriptController {
 
         const scriptRepository = getRepository(Script);
         try {
-            await scriptRepository.save(req.body);
+            let scripts = await scriptRepository.find({ where: {
+                alertName: req.body.alertName, 
+                serverName: req.body.serverName
+            }});
+            await scriptRepository.remove(scripts);
         } catch(error) {
-            return res.status(409).send("Script already exists!");
+            return res.status(401).send(error);
         }
-        
+
+        const scripts = req.body.scripts;
+        for(let i=0;i<scripts.length;i++){
+            const script = {
+                scriptFile: scripts[i].script,
+                alertName: scripts[i].alertName,
+                serverName: scripts[i].serverName
+            };
+            try {
+                await scriptRepository.save(script);
+            } catch(error) {
+                return res.status(409).send("Script already exists!");
+            }
+        }
         res.status(201).send();
     };
     
