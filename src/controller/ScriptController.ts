@@ -42,7 +42,6 @@ export class ScriptController {
                 alertName: req.body.alertName, 
                 serverName: req.body.serverName
             }});
-            console.log(scripts);
             if(scripts) await scriptRepository.remove(scripts);
         } catch(error) {
             return res.status(401).send(error);
