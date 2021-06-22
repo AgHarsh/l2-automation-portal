@@ -42,7 +42,7 @@ export class ScriptController {
                 alertName: req.body.alertName, 
                 serverName: req.body.serverName
             }});
-            await scriptRepository.remove(scripts);
+            if(!scripts) await scriptRepository.remove(scripts);
         } catch(error) {
             return res.status(401).send(error);
         }
