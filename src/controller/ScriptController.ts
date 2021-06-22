@@ -42,25 +42,29 @@ export class ScriptController {
                 alertName: req.body.alertName, 
                 serverName: req.body.serverName
             }});
-            if(!scripts) await scriptRepository.remove(scripts);
+            console.log(scripts);
+            if(scripts) await scriptRepository.remove(scripts);
         } catch(error) {
             return res.status(401).send(error);
         }
 
         const scripts = req.body.scripts;
         for(let i=0;i<scripts.length;i++){
-            const script = {
-                scriptFile: scripts[i].script,
-                alertName: scripts[i].alertName,
-                serverName: scripts[i].serverName
-            };
-            try {
-                await scriptRepository.save(script);
-            } catch(error) {
-                return res.status(409).send("Script already exists!");
+            if(scripts[i].script){
+                const script = {
+                    scriptFile: scripts[i].script,
+                    alertName: req.body.alertName,
+                    serverName: req.body.serverName
+                };
+                try {
+                    await scriptRepository.save(script);
+                } catch(error) {
+                    return res.status(409).send(error);
+                }
             }
-        }
-        res.status(201).send();
+            res.status(201).send();
+            }
+            
     };
     
     static deleteScript = async (req: Request, res: Response) => {
