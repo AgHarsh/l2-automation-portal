@@ -5,7 +5,7 @@ import { Service } from "../entity/Service";
 
 export class ServiceController {
 
-    static listAll = async (req: Request, res: Response) => {
+    static getServices = async (req: Request, res: Response) => {
         const serviceRepository = getRepository(Service);
         res.send(await serviceRepository.find());
     };

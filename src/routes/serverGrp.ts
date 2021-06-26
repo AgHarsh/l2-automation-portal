@@ -5,11 +5,8 @@ import { authorization } from "../middleware/authorization";
 
 const router = Router();
 
-// Get all serverGrps
-router.get("/", [authentication, authorization], ServerGrpController.listAll);
-
-// Get all serverGrps with given service
-router.post("/", [authentication], ServerGrpController.getByService);
+// Get all serverGrps if isAdmin or pass the service in the query
+router.get("/", [authentication], ServerGrpController.getServerGrps);
 
 // Get one serverGrp
 router.get("/:id", [authentication, authorization], ServerGrpController.getOneById);

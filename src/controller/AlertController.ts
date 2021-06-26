@@ -5,7 +5,7 @@ import { Alert } from "../entity/Alert";
 
 export class AlertController {
 
-    static listAll = async (req: Request, res: Response) => {
+    static getAlerts = async (req: Request, res: Response) => {
         const alertRepository = getRepository(Alert);
         res.send(await alertRepository.find());
     };
@@ -49,7 +49,7 @@ export class AlertController {
         try {
             await alertRepository.save(alert);
         } catch(error) {
-            return res.status(409).send("Alert Name already in use");
+            return res.status(409).send("Alert already exists");
         }
         
         res.status(204).send();

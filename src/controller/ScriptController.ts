@@ -1,25 +1,45 @@
 import { Request, Response } from "express";
 import { getRepository } from "typeorm";
 import { validate } from "class-validator";
+import { Service } from "../entity/Service";
+import { Server } from "../entity/Server";
+import { Alert } from "../entity/Alert";
 import { Script } from "../entity/Script";
 
 export class ScriptController {
 
-    static listAll = async (req: Request, res: Response) => {
+    static getScripts = async (req: Request, res: Response) => {
         const scriptRepository = getRepository(Script);
-        res.send(await scriptRepository.find())
-    };
-
-    static getByServerAndAlert = async (req: Request, res: Response) => {
-        const scriptRepository = getRepository(Script);
+        if(!req.query.alert){
+            if(!req.user.isAdmin) 
+                return res.status(403).send('Access Denied');
+            return res.send(await scriptRepository.find())
+        } 
         try {
-            let scripts = await scriptRepository.find({ where: {
-                alertName: req.body.alertName, 
-                serverName: req.body.serverName
-            }});
-            res.send(scripts);
+            if(req.query.service){
+                const alert = await getRepository(Alert).findOneOrFail({ where: {
+                    alertName: req.query.alert
+                }, select: ["alertId"]});
+                const service = await getRepository(Service).findOneOrFail({ where: {
+                    serviceName: req.query.service
+                }, select: ["serviceId"]});
+                const server = await getRepository(Server).findOneOrFail({ where: {
+                    serverName: req.query.server,
+                    serviceId: service.serviceId
+                }, select: ["serverId"]});
+                res.send(await scriptRepository.find({ where: {
+                    alertId: alert.alertId, 
+                    serverId: server.serverId
+                }}));
+            }
+            else{
+                res.send(await scriptRepository.find({ where: {
+                    alertId: req.query.alert, 
+                    serverId: req.query.server
+                }}));
+            }
         } catch(error) {
-            res.status(401).send("ServerGrp or Alert Not Found");
+            res.status(401).send("No such Scripts Found!");
         }
     };
 
@@ -39,12 +59,12 @@ export class ScriptController {
         const scriptRepository = getRepository(Script);
         try {
             let scripts = await scriptRepository.find({ where: {
-                alertName: req.body.alertName, 
-                serverName: req.body.serverName
+                alertId: req.body.alertId, 
+                serverId: req.body.serverId
             }});
             if(scripts) await scriptRepository.remove(scripts);
         } catch(error) {
-            return res.status(401).send(error);
+            return res.status(401).send(error.message);
         }
 
         const scripts = req.body.scripts;
@@ -52,13 +72,13 @@ export class ScriptController {
             if(scripts[i].script){
                 const script = {
                     scriptFile: scripts[i].script,
-                    alertName: req.body.alertName,
-                    serverName: req.body.serverName
+                    alertId: req.body.alertId,
+                    serverId: req.body.serverId
                 };
                 try {
                     await scriptRepository.save(script);
                 } catch(error) {
-                    return res.status(409).send(error);
+                    return res.status(409).send(error.message);
                 }
             }
             res.status(201).send();

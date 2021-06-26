@@ -3,7 +3,7 @@ import { ServerGrp } from "./ServerGrp";
 import { Script } from "./Script";
 
 @Entity()
-@Unique(["serverName"])
+@Unique(["serverName","serverGrpId"])
 export class Server {
 
     @PrimaryGeneratedColumn()
@@ -13,10 +13,13 @@ export class Server {
     serverName: string;
     
     @Column()
-    serverGrpName: string;
+    serverGrpId: number;
     @ManyToOne(() => ServerGrp, serverGrp => serverGrp.servers)
-    @JoinColumn({ name: "serverGrpName", referencedColumnName: "serverGrpName" })
+    @JoinColumn({ name: "serverGrpId", referencedColumnName: "serverGrpId" })
     serverGrp: ServerGrp;
+
+    @Column()
+    serviceId: number;
 
     @OneToMany(() => Script, script => script.server)
     scripts: Script[];

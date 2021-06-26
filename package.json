@@ -27,7 +27,7 @@
    },
    "scripts": {
       "tsc": "tsc",
-      "start": "npx ts-node-dev --respawn src/index.ts",
+      "start": "npx ts-node-dev --respawn --transpile-only --quiet src/index.ts",
       "prod": "tsc && node ./build/app.js",
       "migration:run": "ts-node ./node_modules/typeorm/cli.js migration:run"
    }

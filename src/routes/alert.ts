@@ -6,7 +6,7 @@ import { authorization } from "../middleware/authorization";
 const router = Router();
 
 // Get all alerts
-router.get("/", [authentication], AlertController.listAll);
+router.get("/", [authentication], AlertController.getAlerts);
 
 // Get one alert
 router.get("/:id", [authentication], AlertController.getOneById);

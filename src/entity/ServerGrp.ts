@@ -3,7 +3,7 @@ import { Service } from "./Service";
 import { Server } from "./Server";
 
 @Entity()
-@Unique(["serverGrpName"])
+@Unique(["serverGrpName", "serviceId"])
 export class ServerGrp {
 
     @PrimaryGeneratedColumn()
@@ -13,9 +13,9 @@ export class ServerGrp {
     serverGrpName: string;
     
     @Column()
-    serviceName: string;
+    serviceId: number;
     @ManyToOne(() => Service, service => service.serverGrps)
-    @JoinColumn({ name: "serviceName", referencedColumnName: 'serviceName' })
+    @JoinColumn({ name: "serviceId", referencedColumnName: 'serviceId' })
     service: Service;
 
     @OneToMany(() => Server, server => server.serverGrp)

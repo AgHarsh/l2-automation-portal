@@ -1,5 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany, Unique } from "typeorm";
 import { ServerGrp } from './ServerGrp';
+import { Server } from './Server';
 
 @Entity()
 @Unique(["serviceName"])
@@ -13,4 +14,5 @@ export class Service {
 
     @OneToMany(() => ServerGrp, serverGrp => serverGrp.service)
     serverGrps: ServerGrp[];
+
 }

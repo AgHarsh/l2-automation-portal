@@ -6,7 +6,7 @@ import { authorization } from "../middleware/authorization";
 const router = Router();
 
 // Get all services
-router.get("/", [authentication], ServiceController.listAll);
+router.get("/", [authentication], ServiceController.getServices);
 
 // Get one service
 router.get("/:id", [authentication], ServiceController.getOneById);

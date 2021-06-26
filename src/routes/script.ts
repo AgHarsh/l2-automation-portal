@@ -5,11 +5,8 @@ import { authorization } from "../middleware/authorization";
 
 const router = Router();
 
-// Get all scripts
-router.get("/", [authentication, authorization], ScriptController.listAll);
-
-// Get all scripts with given server and alert
-router.post("/", [authentication], ScriptController.getByServerAndAlert);
+// Get all scripts if isAdmin or pass the server and alert in query, if service is also passed then all the queries will be treated as names.
+router.get("/", [authentication], ScriptController.getScripts);
 
 // Get one script
 router.get("/:id", [authentication, authorization], ScriptController.getOneById);

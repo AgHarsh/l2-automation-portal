@@ -6,19 +6,19 @@ import { ServerGrp } from "../entity/ServerGrp";
 
 export class ServerController {
 
-    static listAll = async (req: Request, res: Response) => {
+    static getServers = async (req: Request, res: Response) => {
         const serverRepository = getRepository(Server);
-        res.send(await serverRepository.find())
-    };
-
-    static getByServGrp = async (req: Request, res: Response) => {
-        const serverRepository = getRepository(Server);
+        if(!req.query.servergrp){
+            if(!req.user.isAdmin) 
+                return res.status(403).send('Access Denied');
+            return res.send(await serverRepository.find());
+        }
         try {
             res.send(await serverRepository.find({ where: {
-                serverGrpName: req.body.serverGrpName
+                serverGrpId: req.query.servergrp
             }}));
         } catch(error) {
-            res.status(401).send("ServerGrp Not Found");
+            res.status(401).send("Servers With Given ServerGrps Not Found!");
         }
     };
 
@@ -37,16 +37,20 @@ export class ServerController {
 
         const serverRepository = getRepository(Server);
         const serverGrpRepository = getRepository(ServerGrp);
+        let serverGrp;
         try {
-            await serverGrpRepository.find({ where: {
-                serverGrpName: req.body.serverGrpName
-            }});
+            serverGrp = await serverGrpRepository.findOneOrFail({ where: {
+                serverGrpId: req.body.serverGrpId
+            }, select: ["serviceId"]});
         } catch(error){
-            return res.send(400).send("ServerGrp Not Found");
+            return res.status(400).send("ServerGrp Not Found");
         }
-        
+        const server = new Server();
+        server.serverName = req.body.serverName;
+        server.serverGrpId = req.body.serverGrpId;
+        server.serviceId = serverGrp.serviceId;
         try {
-            await serverRepository.save(req.body);
+            await serverRepository.save(server);
         } catch(error) {
             return res.status(409).send("Server already exists!");
         }
@@ -63,24 +67,25 @@ export class ServerController {
         } catch(error) {
             return res.status(404).send("Server Not Found");
         }
-
+        let serverGrp;
         try {
-            await serverGrpRepository.find({ where: {
-                serverGrpName: req.body.serverGrpName
+            serverGrp = await serverGrpRepository.findOneOrFail({ where: {
+                serverGrpId: req.body.serverGrpId
             }});
         } catch(error){
-            return res.send(400).send("ServerGrp Not Found");
+            return res.status(400).send("ServerGrp Not Found");
         }
         
         server.serverName = req.body.serverName;
-        server.serverGrpName = req.body.serverGrpName;
+        server.serverGrpId = req.body.serverGrpId;
+        server.serviceId = serverGrp.serviceId;
         const errors = await validate(server);
         if(errors.length > 0) return res.status(400).end("Error");
 
         try {
             await serverRepository.save(server);
         } catch(error) {
-            return res.status(409).send("Server Name already in use");
+            return res.status(409).send(error.message);
         }
         
         res.status(204).send();

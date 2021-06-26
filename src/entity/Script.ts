@@ -3,7 +3,7 @@ import { Alert } from "./Alert";
 import { Server } from "./Server";
 
 @Entity()
-@Unique(["alertName", "serverName", "scriptFile"])
+@Unique(["alertId", "serverId", "scriptFile"])
 export class Script {
 
     @PrimaryGeneratedColumn()
@@ -13,15 +13,15 @@ export class Script {
     scriptFile: string;
     
     @Column()
-    alertName: string;
+    alertId: number;
     @ManyToOne(() => Alert, alert => alert.scripts)
-    @JoinColumn({ name: "alertName", referencedColumnName: "alertName" })
+    @JoinColumn({ name: "alertId", referencedColumnName: "alertId" })
     alert: Alert;
 
     @Column()
-    serverName: string;
+    serverId: number;
     @ManyToOne(() => Server, server => server.scripts)
-    @JoinColumn({ name: "serverName", referencedColumnName: "serverName" })
+    @JoinColumn({ name: "serverId", referencedColumnName: "serverId" })
     server: Server;
 
 }
