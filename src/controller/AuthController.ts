@@ -24,7 +24,11 @@ export class AuthController {
         const validPassword = compareSync(req.body.password, user.password);
         if(!validPassword) return res.status(400).send("Invalid email or password!");
 
-        const token = jwt.sign({ id: user.id, isAdmin: user.isAdmin }, config.jwtPrivateKey);
+        const token = jwt.sign(
+            { id: user.id, isAdmin: user.isAdmin }, 
+            config.jwtPrivateKey, 
+            { expiresIn: "1h" }
+        );
         res.send(token);
     };
 }

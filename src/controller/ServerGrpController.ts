@@ -9,7 +9,7 @@ export class ServerGrpController {
     static getServerGrps = async (req: Request, res: Response) => {
         const serverGrpRepository = getRepository(ServerGrp);
         if(!req.query.service){
-            if(!req.user.isAdmin) 
+            if(!res.locals.jwtPayload.isAdmin) 
                 return res.status(403).send('Access Denied');
             return res.send(await serverGrpRepository.find());
         }

@@ -11,7 +11,7 @@ export class ScriptController {
     static getScripts = async (req: Request, res: Response) => {
         const scriptRepository = getRepository(Script);
         if(!req.query.alert){
-            if(!req.user.isAdmin) 
+            if(!res.locals.jwtPayload.isAdmin) 
                 return res.status(403).send('Access Denied');
             return res.send(await scriptRepository.find())
         } 
