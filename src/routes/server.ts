@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { ServerController } from "../controller/ServerController";
+import { DBController } from "../controller/DBController";
 import { authentication } from "../middleware/authentication";
 import { authorization } from "../middleware/authorization";
 
@@ -13,6 +14,9 @@ router.get("/:id", [authentication, authorization], ServerController.getOneById)
 
 // Create a new server
 router.post("/new", [authentication, authorization], ServerController.newServer);
+
+// Create multiple servers, servergrps, services
+router.post("/newadmin", [authentication, authorization], DBController.newServers);
 
 // Edit a server
 router.patch("/:id", [authentication, authorization], ServerController.editServer);
