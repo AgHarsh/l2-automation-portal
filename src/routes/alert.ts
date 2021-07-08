@@ -11,6 +11,9 @@ router.get("/", [authentication], AlertController.getAlerts);
 // Get one alert
 router.get("/:id", [authentication], AlertController.getOneById);
 
+// Get alerts which have existing scripts in the database for the given server
+router.get("/status/:id", [authentication], AlertController.activeAlerts);
+
 // Create a new alert
 router.post("/new", [authentication, authorization], AlertController.newAlert);
 

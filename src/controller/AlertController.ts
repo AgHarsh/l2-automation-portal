@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { getRepository } from "typeorm";
 import { validate } from "class-validator";
 import { Alert } from "../entity/Alert";
+import { Script } from "../entity/Script";
 
 export class AlertController {
 
@@ -31,6 +32,20 @@ export class AlertController {
         }
         
         res.status(201).send();
+    };
+
+    static activeAlerts = async (req: Request, res: Response) => {
+        try {
+            const alert = await getRepository(Script)
+                .createQueryBuilder("alert")
+                .where("alert.serverId = :id", { id: req.params.id})
+                .select(["alert.alertId"])
+                .groupBy("alert.alertId")
+                .getMany();
+            res.send(alert);
+        } catch(error) {
+            res.status(404).send(error.message);
+        }
     };
 
     static editAlert = async (req: Request, res: Response) => {
