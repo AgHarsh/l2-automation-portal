@@ -1,4 +1,4 @@
-# server-tracker
+# L2 Automation Portal
 
 To start the backend server: npm start
 
